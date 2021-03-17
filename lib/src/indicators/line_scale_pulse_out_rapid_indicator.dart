@@ -50,7 +50,7 @@ class _LineScalePulseOutRapidIndicatorState
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -77,13 +77,13 @@ class _LineScalePulseOutRapidIndicatorState
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _LineScalePulseOutRapidIndicatorPainter extends CustomPainter {
   _LineScalePulseOutRapidIndicatorPainter({
     this.animationValue,
-    this.minLength,
-    this.maxLength,
+    required this.minLength,
+    required this.maxLength,
     this.lineWidth,
     this.spacing,
     this.lineNum,
@@ -96,13 +96,13 @@ class _LineScalePulseOutRapidIndicatorPainter extends CustomPainter {
           minLength + (maxLength - minLength) * .3,
         ];
 
-  final double animationValue;
+  final double? animationValue;
   final double minLength;
   final double maxLength;
-  final double lineWidth;
-  final double spacing;
-  final int lineNum;
-  final Color lineColor;
+  final double? lineWidth;
+  final double? spacing;
+  final int? lineNum;
+  final Color? lineColor;
   final List<double> offsetLength;
 
   @override
@@ -110,11 +110,11 @@ class _LineScalePulseOutRapidIndicatorPainter extends CustomPainter {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = lineColor
+      ..color = lineColor!
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -122,14 +122,14 @@ class _LineScalePulseOutRapidIndicatorPainter extends CustomPainter {
     }
 
     var diffLength = maxLength - minLength;
-    for (int i = 0; i < lineNum; i++) {
+    for (int i = 0; i < lineNum!; i++) {
       var offsetExtent = asin((offsetLength[i] - minLength) / diffLength);
       var scaleLength =
           sin(_progress * pi / 180 + offsetExtent).abs() * diffLength +
               minLength;
-      var left = (lineWidth + spacing) * i;
+      var left = (lineWidth! + spacing!) * i;
       var top = (maxLength - scaleLength) * .5;
-      Rect rect = Rect.fromLTWH(left, top, lineWidth, scaleLength);
+      Rect rect = Rect.fromLTWH(left, top, lineWidth!, scaleLength);
       RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(4.0));
       canvas.drawRRect(rRect, paint);
     }

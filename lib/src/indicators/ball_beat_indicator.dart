@@ -55,7 +55,7 @@ class _BallBeatIndicatorState extends State<BallBeatIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -75,15 +75,15 @@ class _BallBeatIndicatorState extends State<BallBeatIndicator>
 }
 
 double progress = .0;
-double lastExtent = .0;
+double? lastExtent = .0;
 
 class _BallBeatIndicatorPainter extends CustomPainter {
   _BallBeatIndicatorPainter({
     this.animationValue,
-    this.minRadius,
-    this.maxRadius,
-    this.minAlpha,
-    this.maxAlpha,
+    required this.minRadius,
+    required this.maxRadius,
+    required this.minAlpha,
+    required this.maxAlpha,
     this.spacing,
     this.ballColor,
   })  : alphaList = <double>[
@@ -97,13 +97,13 @@ class _BallBeatIndicatorPainter extends CustomPainter {
           minRadius + (maxRadius - minRadius) * 0.9,
         ];
 
-  final double animationValue;
+  final double? animationValue;
   final double minRadius;
   final double maxRadius;
   final int minAlpha;
   final int maxAlpha;
-  final double spacing;
-  final Color ballColor;
+  final double? spacing;
+  final Color? ballColor;
   final List<double> alphaList;
   final List<double> radiusList;
 
@@ -115,7 +115,7 @@ class _BallBeatIndicatorPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    progress += (lastExtent - animationValue).abs();
+    progress += (lastExtent! - animationValue!).abs();
     lastExtent = animationValue;
     if (progress >= double.maxFinite) {
       progress = .0;
@@ -129,9 +129,9 @@ class _BallBeatIndicatorPainter extends CustomPainter {
       var beatAlpha =
           sin(progress * pi / 180 + offsetAlpha).abs() * diffAlpha + minAlpha;
       paint.color = Color.fromARGB(
-          beatAlpha.round(), ballColor.red, ballColor.green, ballColor.blue);
+          beatAlpha.round(), ballColor!.red, ballColor!.green, ballColor!.blue);
 
-      var dx = maxRadius + 2 * i * maxRadius + i * spacing;
+      var dx = maxRadius + 2 * i * maxRadius + i * spacing!;
       var offset = Offset(dx, maxRadius);
       var offsetExtent = asin((radiusList[i] - minRadius) / diffRadius);
       var scaleRadius =

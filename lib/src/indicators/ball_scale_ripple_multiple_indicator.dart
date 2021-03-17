@@ -24,21 +24,21 @@ class BallScaleRippleMultipleIndicator extends StatefulWidget {
 class _BallScaleRippleMultipleIndicatorState
     extends State<BallScaleRippleMultipleIndicator>
     with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
-  AnimationController _controller;
+  late Animation<double> _animation;
+  AnimationController? _controller;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+    _animation = CurvedAnimation(parent: _controller!, curve: Curves.linear);
     _animation = Tween<double>(begin: 0, end: widget.radius).animate(_animation)
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
-          _controller.reset();
-          _controller.forward();
+          _controller!.reset();
+          _controller!.forward();
         }
       });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -75,26 +75,26 @@ class _BallScaleRippleMultipleIndicatorState
 class _BallScaleRippleMultipleIndicatorPainter extends CustomPainter {
   _BallScaleRippleMultipleIndicatorPainter({
     this.animationValue,
-    this.radius,
+    required this.radius,
     this.ballColor,
     this.duration,
   }) : offsetList = <double>[radius, radius * .7, radius * .4],
         strokeList = <double>[1.2, .84, 0.48];
 
-  final double animationValue;
+  final double? animationValue;
   final double radius;
-  final Color ballColor;
-  final Duration duration;
+  final Color? ballColor;
+  final Duration? duration;
   final List<double> offsetList;
   final List<double> strokeList;
 
   @override
   void paint(Canvas canvas, Size size) {
-    var percent = animationValue / radius;
+    var percent = animationValue! / radius;
     var paint = Paint()
       ..isAntiAlias = true
-      ..color = Color.fromARGB((255 * percent).round(), ballColor.red,
-          ballColor.green, ballColor.blue)
+      ..color = Color.fromARGB((255 * percent).round(), ballColor!.red,
+          ballColor!.green, ballColor!.blue)
       ..style = PaintingStyle.stroke;
 
     var center = Offset(radius, radius);

@@ -28,9 +28,9 @@ class BallClipRotateIndicator extends StatefulWidget {
 
 class _BallClipRotateIndicatorState extends State<BallClipRotateIndicator>
     with SingleTickerProviderStateMixin {
-  Animation<double> _radius;
-  Animation<double> _rotate;
-  AnimationController _controller;
+  late Animation<double> _radius;
+  late Animation<double> _rotate;
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _BallClipRotateIndicatorState extends State<BallClipRotateIndicator>
     _radius =
         Tween<double>(begin: widget.minRadius, end: widget.maxRadius).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(0, 1, curve: Curves.fastOutSlowIn),
       ),
     );
@@ -47,18 +47,18 @@ class _BallClipRotateIndicatorState extends State<BallClipRotateIndicator>
       end: 360,
     ).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(0, 1, curve: Curves.fastOutSlowIn),
       ),
     );
-    _controller.addStatusListener((AnimationStatus status) {
+    _controller!.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        _controller.reverse();
+        _controller!.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
+        _controller!.forward();
       }
     });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -75,7 +75,7 @@ class _BallClipRotateIndicatorState extends State<BallClipRotateIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
+      animation: _controller!,
       builder: (context, child) {
         return CustomPaint(
           size: _measureSize(),
@@ -94,7 +94,7 @@ class _BallClipRotateIndicatorState extends State<BallClipRotateIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallClipRotateIndicatorPainter extends CustomPainter {
   _BallClipRotateIndicatorPainter({
@@ -106,12 +106,12 @@ class _BallClipRotateIndicatorPainter extends CustomPainter {
     this.color,
   });
 
-  final double angle;
-  final double radius;
-  final double minRadius;
-  final double maxRadius;
-  final double startAngle;
-  final Color color;
+  final double? angle;
+  final double? radius;
+  final double? minRadius;
+  final double? maxRadius;
+  final double? startAngle;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -120,9 +120,9 @@ class _BallClipRotateIndicatorPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round
-      ..color = color;
+      ..color = color!;
 
-    _progress += (_lastExtent - angle).abs();
+    _progress += (_lastExtent! - angle!).abs();
     _lastExtent = angle;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -130,9 +130,9 @@ class _BallClipRotateIndicatorPainter extends CustomPainter {
     }
 
     canvas.translate(size.width * .5, size.height * .5);
-    canvas.rotate((_progress + startAngle) * pi / 180);
-    var preScale = minRadius / maxRadius;
-    var scale = preScale + (radius - minRadius) / maxRadius;
+    canvas.rotate((_progress + startAngle!) * pi / 180);
+    var preScale = minRadius! / maxRadius!;
+    var scale = preScale + (radius! - minRadius!) / maxRadius!;
     canvas.scale(scale);
     Rect rect = Rect.fromLTWH(
         -size.width * .5, -size.height * .5, size.width, size.height);

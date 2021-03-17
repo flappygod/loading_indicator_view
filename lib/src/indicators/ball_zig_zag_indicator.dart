@@ -28,12 +28,12 @@ class BallZigZagIndicator extends StatefulWidget {
 
 class _BallZigZagIndicatorState extends State<BallZigZagIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _horizontal;
-  Animation<double> _rightWaistX;
-  Animation<double> _rightWaistY;
-  Animation<double> _leftWaistX;
-  Animation<double> _leftWaistY;
+  AnimationController? _controller;
+  late Animation<double> _horizontal;
+  late Animation<double> _rightWaistX;
+  late Animation<double> _rightWaistY;
+  late Animation<double> _leftWaistX;
+  late Animation<double> _leftWaistY;
 
   @override
   void initState() {
@@ -51,39 +51,39 @@ class _BallZigZagIndicatorState extends State<BallZigZagIndicator>
     var end = widget.width - widget.ballRadius;
 
     _horizontal = Tween<double>(begin: begin, end: end).animate(CurvedAnimation(
-        parent: _controller, curve: Interval(0, horEndInterval)));
+        parent: _controller!, curve: Interval(0, horEndInterval)));
 
     begin = widget.width - widget.ballRadius;
     end = widget.width * .5;
     _rightWaistX = Tween<double>(begin: begin, end: end).animate(
         CurvedAnimation(
-            parent: _controller,
+            parent: _controller!,
             curve: Interval(horEndInterval, rightEndInterval)));
     begin = widget.ballRadius;
     end = widget.height * .5;
     _rightWaistY = Tween<double>(begin: begin, end: end).animate(
         CurvedAnimation(
-            parent: _controller,
+            parent: _controller!,
             curve: Interval(horEndInterval, rightEndInterval)));
 
     begin = widget.width * .5;
     end = widget.ballRadius;
     _leftWaistX = Tween<double>(begin: begin, end: end).animate(CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(rightEndInterval, leftEndInterval)));
     begin = widget.height * .5;
     end = widget.ballRadius;
     _leftWaistY = Tween<double>(begin: begin, end: end).animate(CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(rightEndInterval, leftEndInterval)));
 
-    _controller.addListener(() {
-      if (_controller.isCompleted) {
-        _controller.reset();
-        _controller.forward();
+    _controller!.addListener(() {
+      if (_controller!.isCompleted) {
+        _controller!.reset();
+        _controller!.forward();
       }
     });
-    _controller.forward();
+    _controller!.forward();
 
     super.initState();
   }
@@ -97,7 +97,7 @@ class _BallZigZagIndicatorState extends State<BallZigZagIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
+      animation: _controller!,
       builder: (context, child) => CustomPaint(
             size: Size(widget.width, widget.height),
             painter: _BallZigZagIndicatorPainter(
@@ -125,29 +125,29 @@ class _BallZigZagIndicatorPainter extends CustomPainter {
     this.color,
   });
 
-  final double horizontal;
-  final double rightWaistX;
-  final double rightWaistY;
-  final double leftWaistX;
-  final double leftWaistY;
-  final double ballRadius;
-  final Color color;
+  final double? horizontal;
+  final double? rightWaistX;
+  final double? rightWaistY;
+  final double? leftWaistX;
+  final double? leftWaistY;
+  final double? ballRadius;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = color;
+      ..color = color!;
 
     canvas.save();
-    if (horizontal < size.width - ballRadius) {
-      canvas.drawCircle(Offset(horizontal, ballRadius), ballRadius, paint);
-    } else if (rightWaistX > size.width * .5 &&
-        rightWaistY < size.height * .5) {
-      canvas.drawCircle(Offset(rightWaistX, rightWaistY), ballRadius, paint);
-    } else if (leftWaistX > ballRadius && leftWaistY > ballRadius) {
-      canvas.drawCircle(Offset(leftWaistX, leftWaistY), ballRadius, paint);
+    if (horizontal! < size.width - ballRadius!) {
+      canvas.drawCircle(Offset(horizontal!, ballRadius!), ballRadius!, paint);
+    } else if (rightWaistX! > size.width * .5 &&
+        rightWaistY! < size.height * .5) {
+      canvas.drawCircle(Offset(rightWaistX!, rightWaistY!), ballRadius!, paint);
+    } else if (leftWaistX! > ballRadius! && leftWaistY! > ballRadius!) {
+      canvas.drawCircle(Offset(leftWaistX!, leftWaistY!), ballRadius!, paint);
     }
     canvas.restore();
 
@@ -156,13 +156,13 @@ class _BallZigZagIndicatorPainter extends CustomPainter {
     canvas.transform(Matrix4.rotationX(pi).storage);
     canvas.translate(size.width, 0);
     canvas.transform(Matrix4.rotationY(pi).storage);
-    if (horizontal < size.width - ballRadius) {
-      canvas.drawCircle(Offset(horizontal, ballRadius), ballRadius, paint);
-    } else if (rightWaistX > size.width * .5 &&
-        rightWaistY < size.height * .5) {
-      canvas.drawCircle(Offset(rightWaistX, rightWaistY), ballRadius, paint);
-    } else if (leftWaistX > ballRadius && leftWaistY > ballRadius) {
-      canvas.drawCircle(Offset(leftWaistX, leftWaistY), ballRadius, paint);
+    if (horizontal! < size.width - ballRadius!) {
+      canvas.drawCircle(Offset(horizontal!, ballRadius!), ballRadius!, paint);
+    } else if (rightWaistX! > size.width * .5 &&
+        rightWaistY! < size.height * .5) {
+      canvas.drawCircle(Offset(rightWaistX!, rightWaistY!), ballRadius!, paint);
+    } else if (leftWaistX! > ballRadius! && leftWaistY! > ballRadius!) {
+      canvas.drawCircle(Offset(leftWaistX!, leftWaistY!), ballRadius!, paint);
     }
     canvas.restore();
   }

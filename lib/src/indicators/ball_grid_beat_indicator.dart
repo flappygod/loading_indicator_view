@@ -52,7 +52,7 @@ class _BallGridBeatIndicatorState extends State<BallGridBeatIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -71,14 +71,14 @@ class _BallGridBeatIndicatorState extends State<BallGridBeatIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallGridBeatIndicatorPainter extends CustomPainter {
   _BallGridBeatIndicatorPainter({
     this.animationValue,
     this.radius,
-    this.minAlpha,
-    this.maxAlpha,
+    required this.minAlpha,
+    required this.maxAlpha,
     this.spacing,
     this.ballColor,
   }) : alphaList = <double>[
@@ -93,12 +93,12 @@ class _BallGridBeatIndicatorPainter extends CustomPainter {
           minAlpha + (maxAlpha - minAlpha) * 0.1,
         ];
 
-  final double animationValue;
-  final double radius;
+  final double? animationValue;
+  final double? radius;
   final int minAlpha;
   final int maxAlpha;
-  final double spacing;
-  final Color ballColor;
+  final double? spacing;
+  final Color? ballColor;
   final List<double> alphaList;
 
   @override
@@ -109,7 +109,7 @@ class _BallGridBeatIndicatorPainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -122,17 +122,17 @@ class _BallGridBeatIndicatorPainter extends CustomPainter {
       int row = i ~/ 3;
       int column = i % 3;
 
-      var dx = radius + 2 * column * radius + column * spacing;
-      var dy = (2 * row + 1) * radius + row * spacing;
+      var dx = radius! + 2 * column * radius! + column * spacing!;
+      var dy = (2 * row + 1) * radius! + row * spacing!;
       var offset = Offset(dx, dy);
 
       var offsetAlpha = asin((alphaList[i] - minAlpha) / diffAlpha);
       var beatAlpha =
           sin(_progress * pi / 180 + offsetAlpha).abs() * diffAlpha + minAlpha;
       paint.color = Color.fromARGB(
-          beatAlpha.round(), ballColor.red, ballColor.green, ballColor.blue);
+          beatAlpha.round(), ballColor!.red, ballColor!.green, ballColor!.blue);
 
-      canvas.drawCircle(offset, radius, paint);
+      canvas.drawCircle(offset, radius!, paint);
       canvas.restore();
     }
   }

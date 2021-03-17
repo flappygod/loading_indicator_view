@@ -48,7 +48,7 @@ class _LineScaleIndicatorState extends State<LineScaleIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -75,7 +75,7 @@ class _LineScaleIndicatorState extends State<LineScaleIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _LineScaleIndicatorPainter extends CustomPainter {
   _LineScaleIndicatorPainter({
@@ -88,47 +88,47 @@ class _LineScaleIndicatorPainter extends CustomPainter {
     this.lineColor,
   }) {
     offsetLength = <double>[];
-    var diffLength = maxLength - minLength;
-    for (int i = 0; i < lineNum; i++) {
-      offsetLength.add(minLength + diffLength * 2 * i / 10.0);
+    var diffLength = maxLength! - minLength!;
+    for (int i = 0; i < lineNum!; i++) {
+      offsetLength.add(minLength! + diffLength * 2 * i / 10.0);
     }
   }
 
-  final double animationValue;
-  final double minLength;
-  final double maxLength;
-  final double lineWidth;
-  final double spacing;
-  final int lineNum;
-  final Color lineColor;
+  final double? animationValue;
+  final double? minLength;
+  final double? maxLength;
+  final double? lineWidth;
+  final double? spacing;
+  final int? lineNum;
+  final Color? lineColor;
 
-  List<double> offsetLength;
+  late List<double> offsetLength;
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = lineColor
+      ..color = lineColor!
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
       _lastExtent = .0;
     }
 
-    var diffLength = maxLength - minLength;
-    for (int i = 0; i < lineNum; i++) {
-      var offsetExtent = asin((offsetLength[i] - minLength) / diffLength);
+    var diffLength = maxLength! - minLength!;
+    for (int i = 0; i < lineNum!; i++) {
+      var offsetExtent = asin((offsetLength[i] - minLength!) / diffLength);
       var scaleLength =
           sin(_progress * pi / 180 + offsetExtent).abs() * diffLength +
-              minLength;
-      var left = (lineWidth + spacing) * i;
-      var top = (maxLength - scaleLength) * .5;
-      Rect rect = Rect.fromLTWH(left, top, lineWidth, scaleLength);
+              minLength!;
+      var left = (lineWidth! + spacing!) * i;
+      var top = (maxLength! - scaleLength) * .5;
+      Rect rect = Rect.fromLTWH(left, top, lineWidth!, scaleLength);
       RRect rRect = RRect.fromRectAndRadius(rect, Radius.circular(4.0));
       canvas.drawRRect(rRect, paint);
     }

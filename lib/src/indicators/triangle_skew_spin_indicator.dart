@@ -26,24 +26,24 @@ class TriangleSkewSpinIndicator extends StatefulWidget {
 
 class _TriangleSkewSpinIndicatorState extends State<TriangleSkewSpinIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _rotateX, _rotateY;
+  AnimationController? _controller;
+  Animation<double>? _rotateX, _rotateY;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: widget.duration);
     _rotateY = Tween<double>(begin: 0, end: 180)
-        .animate(CurvedAnimation(parent: _controller, curve: Interval(0, 0.5)));
+        .animate(CurvedAnimation(parent: _controller!, curve: Interval(0, 0.5)));
     _rotateX = Tween<double>(begin: 0, end: 180)
-        .animate(CurvedAnimation(parent: _controller, curve: Interval(0.5, 1)));
-    _controller.addListener(() {
-      if (_controller.isCompleted) {
-        _controller.reset();
-        _controller.forward();
+        .animate(CurvedAnimation(parent: _controller!, curve: Interval(0.5, 1)));
+    _controller!.addListener(() {
+      if (_controller!.isCompleted) {
+        _controller!.reset();
+        _controller!.forward();
         _count++;
       }
     });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -55,12 +55,12 @@ class _TriangleSkewSpinIndicatorState extends State<TriangleSkewSpinIndicator>
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _controller,
+        animation: _controller!,
         builder: (context, child) => CustomPaint(
               size: Size(widget.width, widget.height),
               painter: _TriangleSkewSpinIndicatorPainter(
-                rotateX: _rotateX.value,
-                rotateY: _rotateY.value,
+                rotateX: _rotateX?.value,
+                rotateY: _rotateY?.value,
                 color: widget.color,
               ),
             ),
@@ -76,23 +76,23 @@ class _TriangleSkewSpinIndicatorPainter extends CustomPainter {
     this.color,
   });
 
-  final double rotateX;
-  final double rotateY;
-  final Color color;
+  final double? rotateX;
+  final double? rotateY;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = color;
+      ..color = color!;
 
     final radian = pi / 180;
-    var matrix;
-    if (rotateY < 180) {
-      matrix = Matrix4.rotationY(rotateY * radian);
-    } else if (rotateX < 180) {
-      matrix = Matrix4.rotationX(rotateX * radian);
+    late var matrix;
+    if (rotateY! < 180) {
+      matrix = Matrix4.rotationY(rotateY! * radian);
+    } else if (rotateX! < 180) {
+      matrix = Matrix4.rotationX(rotateX! * radian);
     }
 
     final halfWidth = size.width * .5;

@@ -52,7 +52,7 @@ class _BallPulseSyncIndicatorState extends State<BallPulseSyncIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child){
         return CustomPaint(
           size: measureSize(),
@@ -70,22 +70,22 @@ class _BallPulseSyncIndicatorState extends State<BallPulseSyncIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallPulseSyncIndicatorPainter extends CustomPainter {
   _BallPulseSyncIndicatorPainter({
     this.animationValue,
-    this.extent,
+    required this.extent,
     this.radius,
     this.spacing,
     this.ballColor,
   }) : extentList = <double>[extent * 0.9, extent * 0.6, extent * 0.3];
 
-  final double animationValue;
+  final double? animationValue;
   final double extent;
-  final double radius;
-  final double spacing;
-  final Color ballColor;
+  final double? radius;
+  final double? spacing;
+  final Color? ballColor;
   final List<double> extentList;
 
   @override
@@ -93,22 +93,22 @@ class _BallPulseSyncIndicatorPainter extends CustomPainter {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = ballColor
+      ..color = ballColor!
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
       _lastExtent = .0;
     }
     for (int i = 0; i < extentList.length; i++) {
-      var dx = radius + 2 * i * radius + i * spacing;
+      var dx = radius! + 2 * i * radius! + i * spacing!;
       var offsetExtent = asin(extentList[i] / extent);
-      var offsetY = sin(_progress * pi / 180 + offsetExtent).abs() * extent + radius;
+      var offsetY = sin(_progress * pi / 180 + offsetExtent).abs() * extent + radius!;
       var offset = Offset(dx, offsetY);
-      canvas.drawCircle(offset, radius, paint);
+      canvas.drawCircle(offset, radius!, paint);
     }
   }
 

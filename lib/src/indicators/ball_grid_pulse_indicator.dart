@@ -54,7 +54,7 @@ class _BallGridPulseIndicatorState extends State<BallGridPulseIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: controller,
+        animation: controller!,
         builder: (context, child) {
           return CustomPaint(
             size: measureSize(),
@@ -72,15 +72,15 @@ class _BallGridPulseIndicatorState extends State<BallGridPulseIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallGridPulseIndicatorPainter extends CustomPainter {
   _BallGridPulseIndicatorPainter({
     this.animationValue,
-    this.minRadius,
-    this.maxRadius,
-    this.minAlpha,
-    this.maxAlpha,
+    required this.minRadius,
+    required this.maxRadius,
+    required this.minAlpha,
+    required this.maxAlpha,
     this.spacing,
     this.ballColor,
   })  : radiusList = <double>[
@@ -105,13 +105,13 @@ class _BallGridPulseIndicatorPainter extends CustomPainter {
           minAlpha + (maxAlpha - minAlpha) * 0.2,
           minAlpha + (maxAlpha - minAlpha) * 0.1,
         ];
-  final double animationValue;
+  final double? animationValue;
   final double minRadius;
   final double maxRadius;
   final double minAlpha;
   final double maxAlpha;
-  final double spacing;
-  final Color ballColor;
+  final double? spacing;
+  final Color? ballColor;
   final List<double> radiusList;
   final List<double> alphaList;
 
@@ -120,11 +120,11 @@ class _BallGridPulseIndicatorPainter extends CustomPainter {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = ballColor
+      ..color = ballColor!
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -138,15 +138,15 @@ class _BallGridPulseIndicatorPainter extends CustomPainter {
       int row = i ~/ 3;
       int column = i % 3;
 
-      var dx = maxRadius + 2 * column * maxRadius + column * spacing;
-      var dy = (2 * row + 1) * maxRadius + row * spacing;
+      var dx = maxRadius + 2 * column * maxRadius + column * spacing!;
+      var dy = (2 * row + 1) * maxRadius + row * spacing!;
       var offset = Offset(dx, dy);
 
       var offsetAlpha = asin((alphaList[i] - minAlpha) / diffAlpha);
       var beatAlpha =
           sin(_progress * pi / 180 + offsetAlpha).abs() * diffAlpha + minAlpha;
       paint.color = Color.fromARGB(
-          beatAlpha.round(), ballColor.red, ballColor.green, ballColor.blue);
+          beatAlpha.round(), ballColor!.red, ballColor!.green, ballColor!.blue);
 
       var offsetExtent = asin((radiusList[i] - minRadius) / diffRadius);
       var scaleRadius =

@@ -50,7 +50,7 @@ class _BallSpinFadeLoaderIndicatorState
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: _measureSize(),
@@ -77,7 +77,7 @@ class _BallSpinFadeLoaderIndicatorState
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallSpinFadeLoaderIndicatorPainter extends CustomPainter {
   _BallSpinFadeLoaderIndicatorPainter({
@@ -89,12 +89,12 @@ class _BallSpinFadeLoaderIndicatorPainter extends CustomPainter {
     this.ballColor,
   });
 
-  final double animationValue;
-  final double minRadius;
-  final double maxRadius;
-  final double minAlpha;
-  final double maxAlpha;
-  final Color ballColor;
+  final double? animationValue;
+  final double? minRadius;
+  final double? maxRadius;
+  final double? minAlpha;
+  final double? maxAlpha;
+  final Color? ballColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -102,26 +102,26 @@ class _BallSpinFadeLoaderIndicatorPainter extends CustomPainter {
       ..isAntiAlias = true
       ..style = PaintingStyle.fill;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
       _lastExtent = .0;
     }
 
-    var diffAlpha = maxAlpha - minAlpha;
-    var diffRadius = maxRadius - minRadius;
+    var diffAlpha = maxAlpha! - minAlpha!;
+    var diffRadius = maxRadius! - minRadius!;
     for (int i = 0; i < 8; i++) {
       canvas.save();
 
       var newProgress = _progress - i * 22.5;
-      var beatAlpha = sin(newProgress * pi / 180).abs() * diffAlpha + minAlpha;
+      var beatAlpha = sin(newProgress * pi / 180).abs() * diffAlpha + minAlpha!;
       paint.color = Color.fromARGB(
-          beatAlpha.round(), ballColor.red, ballColor.green, ballColor.blue);
+          beatAlpha.round(), ballColor!.red, ballColor!.green, ballColor!.blue);
       var scaleRadius =
-          sin(newProgress * pi / 180).abs() * diffRadius + minRadius;
+          sin(newProgress * pi / 180).abs() * diffRadius + minRadius!;
       var point = _circleAt(size.width * .5, size.height * .5,
-          size.width * .5 - maxRadius, i * pi / 4);
+          size.width * .5 - maxRadius!, i * pi / 4);
       canvas.drawCircle(point, scaleRadius, paint);
 
       canvas.restore();

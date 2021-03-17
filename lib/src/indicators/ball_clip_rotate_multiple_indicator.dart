@@ -31,9 +31,9 @@ class BallClipRotateMultipleIndicator extends StatefulWidget {
 class _BallClipRotateMultipleIndicator
     extends State<BallClipRotateMultipleIndicator>
     with SingleTickerProviderStateMixin {
-  Animation<double> _radius;
-  Animation<double> _rotate;
-  AnimationController _controller;
+  late Animation<double> _radius;
+  late Animation<double> _rotate;
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _BallClipRotateMultipleIndicator
     _radius =
         Tween<double>(begin: widget.minRadius, end: widget.maxRadius).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(0, 1, curve: Curves.fastOutSlowIn),
       ),
     );
@@ -50,18 +50,18 @@ class _BallClipRotateMultipleIndicator
       end: 180,
     ).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _controller!,
         curve: Interval(0, 1, curve: Curves.fastOutSlowIn),
       ),
     );
-    _controller.addStatusListener((AnimationStatus status) {
+    _controller!.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        _controller.reverse();
+        _controller!.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
+        _controller!.forward();
       }
     });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -78,7 +78,7 @@ class _BallClipRotateMultipleIndicator
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
+      animation: _controller!,
       builder: (context, child) {
         return CustomPaint(
           size: _measureSize(),
@@ -98,7 +98,7 @@ class _BallClipRotateMultipleIndicator
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallClipRotateMultipleIndicatorPainter extends CustomPainter {
   _BallClipRotateMultipleIndicatorPainter({
@@ -112,15 +112,15 @@ class _BallClipRotateMultipleIndicatorPainter extends CustomPainter {
   })  : outsideStartAngles = <double>[135, -45],
         insideStartAngles = <double>[225, 45];
 
-  final double angle;
-  final double radius;
-  final double minRadius;
-  final double maxRadius;
-  final double dashCircleRadius;
-  final double startAngle;
+  final double? angle;
+  final double? radius;
+  final double? minRadius;
+  final double? maxRadius;
+  final double? dashCircleRadius;
+  final double? startAngle;
   final List<double> outsideStartAngles;
   final List<double> insideStartAngles;
-  final Color color;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -129,9 +129,9 @@ class _BallClipRotateMultipleIndicatorPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2
-      ..color = color;
+      ..color = color!;
 
-    _progress += (_lastExtent - angle).abs();
+    _progress += (_lastExtent! - angle!).abs();
     _lastExtent = angle;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -143,9 +143,9 @@ class _BallClipRotateMultipleIndicatorPainter extends CustomPainter {
 
     canvas.save();
     canvas.translate(halfWidth, halfHeight);
-    canvas.rotate((_progress + startAngle) * pi / 180);
-    var preScale = minRadius / maxRadius;
-    var scale = preScale + (radius - minRadius) / maxRadius;
+    canvas.rotate((_progress + startAngle!) * pi / 180);
+    var preScale = minRadius! / maxRadius!;
+    var scale = preScale + (radius! - minRadius!) / maxRadius!;
     canvas.scale(scale);
 
     for (var i = 0; i < outsideStartAngles.length; i++) {
@@ -157,13 +157,13 @@ class _BallClipRotateMultipleIndicatorPainter extends CustomPainter {
     canvas.restore();
 
     canvas.save();
-    var dashCircleSize = dashCircleRadius * 2;
+    var dashCircleSize = dashCircleRadius! * 2;
     canvas.translate(halfWidth, halfHeight);
-    canvas.rotate((-_progress + startAngle) * pi / 180);
+    canvas.rotate((-_progress + startAngle!) * pi / 180);
     canvas.scale(scale);
     for (var i = 0; i < insideStartAngles.length; i++) {
       Rect rect = Rect.fromLTWH(
-          -dashCircleRadius, -dashCircleRadius, dashCircleSize, dashCircleSize);
+          -dashCircleRadius!, -dashCircleRadius!, dashCircleSize, dashCircleSize);
       canvas.drawArc(
           rect, insideStartAngles[i] * pi / 180, 90 * pi / 180, false, paint);
     }

@@ -54,7 +54,7 @@ class _LineSpinFadeLoaderIndicatorState
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -79,7 +79,7 @@ class _LineSpinFadeLoaderIndicatorState
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _LineSpinFadeLoaderIndicatorPainter extends CustomPainter {
   _LineSpinFadeLoaderIndicatorPainter({
@@ -93,14 +93,14 @@ class _LineSpinFadeLoaderIndicatorPainter extends CustomPainter {
     this.ballColor,
   });
 
-  final double animationValue;
-  final double minLineWidth;
-  final double maxLineWidth;
-  final double minLineHeight;
-  final double maxLineHeight;
-  final double minAlpha;
-  final double maxAlpha;
-  final Color ballColor;
+  final double? animationValue;
+  final double? minLineWidth;
+  final double? maxLineWidth;
+  final double? minLineHeight;
+  final double? maxLineHeight;
+  final double? minAlpha;
+  final double? maxAlpha;
+  final Color? ballColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -108,29 +108,29 @@ class _LineSpinFadeLoaderIndicatorPainter extends CustomPainter {
       ..isAntiAlias = true
       ..style = PaintingStyle.fill;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
       _lastExtent = .0;
     }
 
-    var diffAlpha = maxAlpha - minAlpha;
-    var diffWidth = maxLineWidth - minLineWidth;
-    var diffHeight = maxLineHeight - minLineHeight;
+    var diffAlpha = maxAlpha! - minAlpha!;
+    var diffWidth = maxLineWidth! - minLineWidth!;
+    var diffHeight = maxLineHeight! - minLineHeight!;
     for (int i = 0; i < 8; i++) {
       canvas.save();
 
       var newProgress = _progress - i * 22.5;
-      var beatAlpha = sin(newProgress * pi / 180).abs() * diffAlpha + minAlpha;
+      var beatAlpha = sin(newProgress * pi / 180).abs() * diffAlpha + minAlpha!;
       paint.color = Color.fromARGB(
-          beatAlpha.round(), ballColor.red, ballColor.green, ballColor.blue);
+          beatAlpha.round(), ballColor!.red, ballColor!.green, ballColor!.blue);
       var scaleWidth =
-          sin(newProgress * pi / 180).abs() * diffWidth + minLineWidth;
+          sin(newProgress * pi / 180).abs() * diffWidth + minLineWidth!;
       var scaleHeight =
-          sin(newProgress * pi / 180).abs() * diffHeight + minLineHeight;
+          sin(newProgress * pi / 180).abs() * diffHeight + minLineHeight!;
       var point = _circleAt(size.width * .5, size.height * .5,
-          size.width * .5 - maxLineWidth, i * pi / 4);
+          size.width * .5 - maxLineWidth!, i * pi / 4);
 
       canvas.translate(point.dx, point.dy);
       canvas.rotate((90 + (i * 45)) * pi / 180);

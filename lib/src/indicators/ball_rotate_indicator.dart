@@ -28,27 +28,27 @@ class BallRotateIndicator extends StatefulWidget {
 
 class _BallRotateIndicatorState extends State<BallRotateIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  Animation<double> _radius;
-  Animation<double> _rotate;
+  AnimationController? _controller;
+  late Animation<double> _radius;
+  late Animation<double> _rotate;
 
   @override
   void initState() {
     _controller = AnimationController(duration: widget.duration, vsync: this);
     _radius = Tween<double>(begin: widget.minBallRadius, end: widget.maxBallRadius).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+      CurvedAnimation(parent: _controller!, curve: Curves.fastOutSlowIn),
     );
     _rotate = Tween<double>(begin: 0, end: 180).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+      CurvedAnimation(parent: _controller!, curve: Curves.fastOutSlowIn),
     );
-    _controller.addStatusListener((AnimationStatus status) {
+    _controller!.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
-        _controller.reverse();
+        _controller!.reverse();
       } else if (status == AnimationStatus.dismissed) {
-        _controller.forward();
+        _controller!.forward();
       }
     });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -66,7 +66,7 @@ class _BallRotateIndicatorState extends State<BallRotateIndicator>
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _controller,
+        animation: _controller!,
         builder: (context, child) => CustomPaint(
           size: measureSize(),
           painter: _BallRotateIndicatorPainter(
@@ -82,7 +82,7 @@ class _BallRotateIndicatorState extends State<BallRotateIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallRotateIndicatorPainter extends CustomPainter {
   _BallRotateIndicatorPainter({
@@ -94,21 +94,21 @@ class _BallRotateIndicatorPainter extends CustomPainter {
     this.color,
   });
 
-  final double angle;
-  final double radius;
-  final double minBallRadius;
-  final double maxBallRadius;
-  final double spacing;
-  final Color color;
+  final double? angle;
+  final double? radius;
+  final double? minBallRadius;
+  final double? maxBallRadius;
+  final double? spacing;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = color;
+      ..color = color!;
 
-    _progress += (_lastExtent - angle).abs();
+    _progress += (_lastExtent! - angle!).abs();
     _lastExtent = angle;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -118,13 +118,13 @@ class _BallRotateIndicatorPainter extends CustomPainter {
     canvas.translate(size.width * .5, size.height * .5);
     canvas.rotate((_progress) * pi / 180);
 
-    var preScale = minBallRadius / maxBallRadius;
-    var scale = preScale + (radius - minBallRadius) / maxBallRadius;
+    var preScale = minBallRadius! / maxBallRadius!;
+    var scale = preScale + (radius! - minBallRadius!) / maxBallRadius!;
     canvas.scale(scale);
 
     for (var i = 0; i < 3; i++) {
-      var dx = (2 * i - 2) * maxBallRadius + (i - 1) * spacing;
-      canvas.drawCircle(Offset(dx, 0), maxBallRadius, paint);
+      var dx = (2 * i - 2) * maxBallRadius! + (i - 1) * spacing!;
+      canvas.drawCircle(Offset(dx, 0), maxBallRadius!, paint);
     }
   }
 

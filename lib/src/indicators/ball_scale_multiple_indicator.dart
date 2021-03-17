@@ -22,21 +22,21 @@ class BallScaleMultipleIndicator extends StatefulWidget {
 
 class _BallScaleMultipleIndicatorState extends State<BallScaleMultipleIndicator>
     with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
-  AnimationController _controller;
+  late Animation<double> _animation;
+  AnimationController? _controller;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+    _animation = CurvedAnimation(parent: _controller!, curve: Curves.linear);
     _animation = Tween<double>(begin: 0, end: widget.radius).animate(_animation)
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
-          _controller.reset();
-          _controller.forward();
+          _controller!.reset();
+          _controller!.forward();
         }
       });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -73,24 +73,24 @@ class _BallScaleMultipleIndicatorState extends State<BallScaleMultipleIndicator>
 class _BallScaleMultipleIndicatorPainter extends CustomPainter {
   _BallScaleMultipleIndicatorPainter({
     this.animationValue,
-    this.radius,
+    required this.radius,
     this.ballColor,
     this.duration,
   }) : offsetList = <double>[radius, radius * .7, radius * .4];
 
-  final double animationValue;
+  final double? animationValue;
   final double radius;
-  final Color ballColor;
-  final Duration duration;
+  final Color? ballColor;
+  final Duration? duration;
   final List<double> offsetList;
 
   @override
   void paint(Canvas canvas, Size size) {
-    var percent = animationValue / radius;
+    var percent = animationValue! / radius;
     var paint = Paint()
       ..isAntiAlias = true
-      ..color = Color.fromARGB((255 * (1 - percent)).toInt(), ballColor.red,
-          ballColor.green, ballColor.blue)
+      ..color = Color.fromARGB((255 * (1 - percent)).toInt(), ballColor!.red,
+          ballColor!.green, ballColor!.blue)
       ..style = PaintingStyle.fill;
 
     var center = Offset(radius, radius);

@@ -50,7 +50,7 @@ class _BallPulseIndicatorState extends State<BallPulseIndicator>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: controller,
+      animation: controller!,
       builder: (context, child) {
         return CustomPaint(
           size: measureSize(),
@@ -68,13 +68,13 @@ class _BallPulseIndicatorState extends State<BallPulseIndicator>
 }
 
 double _progress = .0;
-double _lastExtent = .0;
+double? _lastExtent = .0;
 
 class _BallPulseIndicatorPainter extends CustomPainter {
   _BallPulseIndicatorPainter({
     this.animationValue,
-    this.minRadius,
-    this.maxRadius,
+    required this.minRadius,
+    required this.maxRadius,
     this.spacing,
     this.ballColor,
   }) : radiusList = <double>[
@@ -83,11 +83,11 @@ class _BallPulseIndicatorPainter extends CustomPainter {
           minRadius + (maxRadius - minRadius) * 0.3,
         ];
 
-  final double animationValue;
+  final double? animationValue;
   final double minRadius;
   final double maxRadius;
-  final double spacing;
-  final Color ballColor;
+  final double? spacing;
+  final Color? ballColor;
   final List<double> radiusList;
 
   @override
@@ -95,11 +95,11 @@ class _BallPulseIndicatorPainter extends CustomPainter {
     var paint = Paint()
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
-      ..color = ballColor
+      ..color = ballColor!
       ..strokeJoin = StrokeJoin.round
       ..strokeCap = StrokeCap.round;
 
-    _progress += (_lastExtent - animationValue).abs();
+    _progress += (_lastExtent! - animationValue!).abs();
     _lastExtent = animationValue;
     if (_progress >= double.maxFinite) {
       _progress = .0;
@@ -108,7 +108,7 @@ class _BallPulseIndicatorPainter extends CustomPainter {
 
     var diffRadius = maxRadius - minRadius;
     for (int i = 0; i < radiusList.length; i++) {
-      var dx = maxRadius + 2 * i * maxRadius + i * spacing;
+      var dx = maxRadius + 2 * i * maxRadius + i * spacing!;
       var offset = Offset(dx, maxRadius);
 
       var offsetExtent = asin((radiusList[i] - minRadius) / diffRadius);

@@ -22,21 +22,21 @@ class BallScaleIndicator extends StatefulWidget {
 
 class _BallScaleIndicatorState extends State<BallScaleIndicator>
     with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
-  AnimationController _controller;
+  late Animation<double> _animation;
+  AnimationController? _controller;
 
   @override
   void initState() {
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+    _animation = CurvedAnimation(parent: _controller!, curve: Curves.linear);
     _animation = Tween<double>(begin: 0, end: widget.radius).animate(_animation)
       ..addStatusListener((AnimationStatus status) {
         if (status == AnimationStatus.completed) {
-          _controller.reset();
-          _controller.forward();
+          _controller!.reset();
+          _controller!.forward();
         }
       });
-    _controller.forward();
+    _controller!.forward();
     super.initState();
   }
 
@@ -76,20 +76,20 @@ class _BallScaleIndicatorPainter extends CustomPainter {
     this.ballColor,
   });
 
-  final double animationValue;
-  final double radius;
-  final Color ballColor;
+  final double? animationValue;
+  final double? radius;
+  final Color? ballColor;
 
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..isAntiAlias = true
-      ..color = Color.fromARGB((255 * (1 - animationValue / radius)).toInt(),
-          ballColor.red, ballColor.green, ballColor.blue)
+      ..color = Color.fromARGB((255 * (1 - animationValue! / radius!)).toInt(),
+          ballColor!.red, ballColor!.green, ballColor!.blue)
       ..style = PaintingStyle.fill;
 
-    var center = Offset(radius, radius);
-    canvas.drawCircle(center, animationValue, paint);
+    var center = Offset(radius!, radius!);
+    canvas.drawCircle(center, animationValue!, paint);
   }
 
   @override
